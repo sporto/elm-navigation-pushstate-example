@@ -8,7 +8,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "elm-live --pushstate",
+    "start": "elm-live src/Main.elm --pushstate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

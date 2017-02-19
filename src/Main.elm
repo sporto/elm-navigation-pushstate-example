@@ -93,7 +93,7 @@ view model =
 
 nav : Html Msg
 nav =
-    div [] [ a [ href homePath ] [ text "Home" ], a [ href aboutPath ] [ text "About" ] ]
+    div [] [ a [ href homePath ] [ text "Home" ], text " ", a [ href aboutPath ] [ text "About" ] ]
 
 
 page : Model -> Html Msg
