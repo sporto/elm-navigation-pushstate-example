@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
+import Html.Attributes exposing (href)
 import Navigation
 import UrlParser
 
@@ -55,6 +56,14 @@ parseLocation location =
             NotFoundRoute
 
 
+homePath =
+    "/home"
+
+
+aboutPath =
+    "/about"
+
+
 
 -- UPDATE
 
@@ -77,8 +86,14 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ page model
+        [ nav
+        , page model
         ]
+
+
+nav : Html Msg
+nav =
+    div [] [ a [ href homePath ] [ text "Home" ], a [ href aboutPath ] [ text "About" ] ]
 
 
 page : Model -> Html Msg

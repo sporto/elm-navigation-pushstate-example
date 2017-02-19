@@ -1,5 +1,24 @@
 {
+  "name": "elm-navigation-pushstate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "elm.js",
   "dependencies": {
     "elm-live": "^2.7.4"
-  }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "elm-live --pushstate",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sporto/elm-navigation-pushstate.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sporto/elm-navigation-pushstate/issues"
+  },
+  "homepage": "https://github.com/sporto/elm-navigation-pushstate#readme"
 }
