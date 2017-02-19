@@ -25,7 +25,7 @@ In this example I'm using `elm-live --pushstate` which does this automatically.
 
 Change the browser location using `Navigation.newUrl` instead of a normal link. `newUrl` creates a new history entry via pushState.
 
-__See commented example at (./src/Main.elm).__
+__See commented example at [](./src/Main.elm).__
 
 ## Start
 
