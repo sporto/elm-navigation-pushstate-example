@@ -11,6 +11,10 @@ import UrlParser
 -- MESSAGES
 
 
+{-|
+- ChangeLocation will be used for initiating a url change
+- OnLocationChange will be triggered after a location change
+-}
 type Msg
     = ChangeLocation String
     | OnLocationChange Navigation.Location
@@ -20,12 +24,20 @@ type Msg
 -- MODELS
 
 
+{-|
+- `route` will hold the current matched route
+- `changes` is just here to prove that we are not reloading the page and wiping out the app state
+-}
 type alias Model =
     { route : Route
     , changes : Int
     }
 
 
+{-|
+initialModel will be called with the current matched route.
+We store this in the model so we can display the corrent view.
+-}
 initialModel : Route -> Model
 initialModel route =
     { route = route
@@ -37,12 +49,19 @@ initialModel route =
 -- ROUTING
 
 
+{-|
+This are our available routes
+NotFoundRoute will be used when we cannot match a route.
+-}
 type Route
     = HomeRoute
     | AboutRoute
     | NotFoundRoute
 
 
+{-|
+Define how to match urls
+-}
 matchers : UrlParser.Parser (Route -> a) a
 matchers =
     UrlParser.oneOf
@@ -51,6 +70,9 @@ matchers =
         ]
 
 
+{-|
+Match a location given by the Navigation package and return the matched route.
+-}
 parseLocation : Navigation.Location -> Route
 parseLocation location =
     case (UrlParser.parsePath matchers location) of
@@ -73,6 +95,12 @@ aboutPath =
 -- UPDATE
 
 
+{-|
+On `ChangeLocation` call `Navigation.newUrl` to create a command that will change the browser location.
+
+`OnLocationChange` will be called each time the browser location changes.
+In this case we store the new route in the Model.
+-}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -128,6 +156,9 @@ nav model =
         ]
 
 
+{-|
+Decide what to show based on the current `model.route`
+-}
 page : Model -> Html Msg
 page model =
     case model.route of
