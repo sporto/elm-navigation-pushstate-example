@@ -99,6 +99,10 @@ view model =
         ]
 
 
+{-|
+When clicking a link we want to prevent the default browser behaviour which is to load a new page.
+So we use `onWithOptions` instead of `onClick`.
+-}
 onLinkClick : msg -> Attribute msg
 onLinkClick message =
     let
@@ -110,6 +114,10 @@ onLinkClick message =
         onWithOptions "click" options (Decode.succeed message)
 
 
+{-|
+We want our links to show a proper href e.g. "/about", so we include an href attribute.
+onLinkClick will prevent the browser reloading the page.
+-}
 nav : Model -> Html Msg
 nav model =
     div []
