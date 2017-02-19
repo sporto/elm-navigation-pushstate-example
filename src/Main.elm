@@ -2,6 +2,8 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (href)
+import Html.Events exposing (onWithOptions)
+import Json.Decode as Decode
 import Navigation
 import UrlParser
 
@@ -10,7 +12,8 @@ import UrlParser
 
 
 type Msg
-    = OnLocationChange Navigation.Location
+    = ChangeLocation String
+    | OnLocationChange Navigation.Location
 
 
 
@@ -19,12 +22,14 @@ type Msg
 
 type alias Model =
     { route : Route
+    , changes : Int
     }
 
 
 initialModel : Route -> Model
 initialModel route =
     { route = route
+    , changes = 0
     }
 
 
@@ -57,7 +62,7 @@ parseLocation location =
 
 
 homePath =
-    "/home"
+    "/"
 
 
 aboutPath =
@@ -71,6 +76,9 @@ aboutPath =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        ChangeLocation path ->
+            ( { model | changes = model.changes + 1 }, Navigation.newUrl path )
+
         OnLocationChange location ->
             let
                 newRoute =
@@ -86,14 +94,30 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [ nav
+        [ nav model
         , page model
         ]
 
 
-nav : Html Msg
-nav =
-    div [] [ a [ href homePath ] [ text "Home" ], text " ", a [ href aboutPath ] [ text "About" ] ]
+onLinkClick : msg -> Attribute msg
+onLinkClick message =
+    let
+        options =
+            { stopPropagation = False
+            , preventDefault = True
+            }
+    in
+        onWithOptions "click" options (Decode.succeed message)
+
+
+nav : Model -> Html Msg
+nav model =
+    div []
+        [ a [ href homePath, onLinkClick (ChangeLocation homePath) ] [ text "Home" ]
+        , text " "
+        , a [ href aboutPath, onLinkClick (ChangeLocation aboutPath) ] [ text "About" ]
+        , text (" " ++ toString model.changes)
+        ]
 
 
 page : Model -> Html Msg
