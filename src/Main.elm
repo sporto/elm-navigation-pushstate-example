@@ -12,8 +12,9 @@ import UrlParser
 
 
 {-|
-- ChangeLocation will be used for initiating a url change
-- OnLocationChange will be triggered after a location change
+
+  - ChangeLocation will be used for initiating a url change
+  - OnLocationChange will be triggered after a location change
 -}
 type Msg
     = ChangeLocation String
@@ -25,8 +26,9 @@ type Msg
 
 
 {-|
-- `route` will hold the current matched route
-- `changes` is just here to prove that we are not reloading the page and wiping out the app state
+
+  - `route` will hold the current matched route
+  - `changes` is just here to prove that we are not reloading the page and wiping out the app state
 -}
 type alias Model =
     { route : Route
@@ -34,8 +36,7 @@ type alias Model =
     }
 
 
-{-|
-initialModel will be called with the current matched route.
+{-| initialModel will be called with the current matched route.
 We store this in the model so we can display the corrent view.
 -}
 initialModel : Route -> Model
@@ -49,8 +50,7 @@ initialModel route =
 -- ROUTING
 
 
-{-|
-This are our available routes
+{-| This are our available routes
 NotFoundRoute will be used when we cannot match a route.
 -}
 type Route
@@ -59,8 +59,7 @@ type Route
     | NotFoundRoute
 
 
-{-|
-Define how to match urls
+{-| Define how to match urls
 -}
 matchers : UrlParser.Parser (Route -> a) a
 matchers =
@@ -70,8 +69,7 @@ matchers =
         ]
 
 
-{-|
-Match a location given by the Navigation package and return the matched route.
+{-| Match a location given by the Navigation package and return the matched route.
 -}
 parseLocation : Navigation.Location -> Route
 parseLocation location =
@@ -95,11 +93,11 @@ aboutPath =
 -- UPDATE
 
 
-{-|
-On `ChangeLocation` call `Navigation.newUrl` to create a command that will change the browser location.
+{-| On `ChangeLocation` call `Navigation.newUrl` to create a command that will change the browser location.
 
 `OnLocationChange` will be called each time the browser location changes.
 In this case we store the new route in the Model.
+
 -}
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -127,8 +125,8 @@ view model =
         ]
 
 
-{-|
-When clicking a link we want to prevent the default browser behaviour which is to load a new page.
+{-| When clicking a link we want to prevent the default browser behaviour which is to load a new page.
+Unless the ctrl or command key is pressed.
 So we use `onWithOptions` instead of `onClick`.
 -}
 onLinkClick : msg -> Attribute msg
@@ -139,11 +137,38 @@ onLinkClick message =
             , preventDefault = True
             }
     in
-        onWithOptions "click" options (Decode.succeed message)
+        onWithOptions
+            "click"
+            options
+            (preventDefaultUnlessKeyPressed
+                |> Decode.andThen (maybePreventDefault message)
+            )
 
 
-{-|
-We want our links to show a proper href e.g. "/about", so we include an href attribute.
+preventDefaultUnlessKeyPressed : Decode.Decoder Bool
+preventDefaultUnlessKeyPressed =
+    Decode.map2
+        nor
+        (Decode.field "ctrlKey" Decode.bool)
+        (Decode.field "metaKey" Decode.bool)
+
+
+nor : Bool -> Bool -> Bool
+nor x y =
+    not (x || y)
+
+
+maybePreventDefault : msg -> Bool -> Decode.Decoder msg
+maybePreventDefault msg preventDefault =
+    case preventDefault of
+        True ->
+            Decode.succeed msg
+
+        False ->
+            Decode.fail "Delegated to browser default"
+
+
+{-| We want our links to show a proper href e.g. "/about", so we include an href attribute.
 onLinkClick will prevent the browser reloading the page.
 -}
 nav : Model -> Html Msg
@@ -156,8 +181,7 @@ nav model =
         ]
 
 
-{-|
-Decide what to show based on the current `model.route`
+{-| Decide what to show based on the current `model.route`
 -}
 page : Model -> Html Msg
 page model =
