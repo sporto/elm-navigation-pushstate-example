@@ -20,6 +20,7 @@ In this example I'm using `elm-live --pushstate` which does this automatically.
 - Is a good practice to provide links with a proper `href`. This allows users to copy the link and open a page in a new tap/window.
 - Links should trigger a message to change the location when clicked, e.g. `ChangeLocation "/users"`
 - But we need to prevent the default browser behaviour when clicked. The default behaviour is to load a new page. We want to navigate via the Navigation package instead.
+- Allow for using cmd or control click to open a link in a new tab
 
 ### Navigation.newUrl
 
